@@ -1,70 +1,88 @@
 extends Control
 
 var season: int = 1
-var wins: int = 0
-var losses: int = 0
+var budget: int = 50000000
 var squad: Array = []
+var transfer_pool: Array = []
 
-@onready var info_label: Label = $VBox/Info
-@onready var log_label: RichTextLabel = $VBox/Log
+@onready var tab_container: TabContainer = $Content/TabContainer
+@onready var squad_list: VBoxContainer = $Content/TabContainer/Squad/SquadList
+@onready var budget_label: Label = $Content/TabContainer/Transfers/BudgetLabel
 
 func _ready() -> void:
-	generate_squad()
-	update_info()
-	$VBox/ViewSquad.pressed.connect(_on_view_squad)
-	$VBox/Simulate.pressed.connect(_on_simulate)
-	$VBox/NextSeason.pressed.connect(_on_next_season)
+	_load_players()
+	_setup_tabs()
+	_populate_squad()
+	_populate_transfers()
 
-func generate_squad() -> void:
-	squad.clear()
-	var positions = ["GK", "DEF", "DEF", "DEF", "DEF", "MID", "MID", "MID", "FWD", "FWD", "FWD"]
-	var names = ["Alex", "Jordan", "Sam", "Taylor", "Casey", "Morgan", "Riley", "Jamie", "Drew", "Quinn"]
-	for i in 11:
-		var p = {
-			"name": names[randi() % names.size()] + " " + char(65 + randi() % 26),
-			"rating": 65 + randi() % 25,
-			"position": positions[i]
-		}
+func _setup_tabs() -> void:
+	$BottomTabs/SquadTab.pressed.connect(func(): tab_container.current_tab = 0)
+	$BottomTabs/TransfersTab.pressed.connect(func(): tab_container.current_tab = 1)
+	$BottomTabs/TacticsTab.pressed.connect(func(): tab_container.current_tab = 2)
+	$BottomTabs/ClubTab.pressed.connect(func(): tab_container.current_tab = 3)
+
+func _load_players() -> void:
+	# Sample real players from public EA FC 27 data
+	squad = [
+		{"name": "Kylian Mbappé", "pos": "ST", "ovr": 91, "pot": 94, "pac": 96, "sho": 91, "pas": 80, "dri": 92, "def": 29, "phy": 76, "value": 180000000},
+		{"name": "Erling Haaland", "pos": "ST", "ovr": 91, "pot": 93, "pac": 87, "sho": 92, "pas": 71, "dri": 80, "def": 47, "phy": 89, "value": 170000000},
+		{"name": "Lamine Yamal", "pos": "RW", "ovr": 90, "pot": 95, "pac": 86, "sho": 84, "pas": 87, "dri": 93, "def": 38, "phy": 61, "value": 150000000},
+		{"name": "Jude Bellingham", "pos": "CAM", "ovr": 90, "pot": 94, "pac": 79, "sho": 86, "pas": 83, "dri": 88, "def": 79, "phy": 85, "value": 140000000},
+		{"name": "Pedri", "pos": "CM", "ovr": 90, "pot": 93, "pac": 76, "sho": 75, "pas": 89, "dri": 91, "def": 77, "phy": 75, "value": 120000000},
+	]
+	transfer_pool = [
+		{"name": "Harry Kane", "pos": "ST", "ovr": 90, "pot": 90, "value": 90000000},
+		{"name": "Vinícius Júnior", "pos": "LW", "ovr": 89, "pot": 92, "value": 130000000},
+		{"name": "Rodri", "pos": "CDM", "ovr": 90, "pot": 91, "value": 110000000},
+		{"name": "Bukayo Saka", "pos": "RW", "ovr": 88, "pot": 91, "value": 95000000},
+	]
+
+func _populate_squad() -> void:
+	for child in squad_list.get_children():
+		child.queue_free()
+	for p in squad:
+		var card = _create_player_card(p, true)
+		squad_list.add_child(card)
+
+func _populate_transfers() -> void:
+	var list = $Content/TabContainer/Transfers/TransferList
+	for child in list.get_children():
+		child.queue_free()
+	var vbox = VBoxContainer.new()
+	list.add_child(vbox)
+	for p in transfer_pool:
+		var card = _create_player_card(p, false)
+		vbox.add_child(card)
+
+func _create_player_card(p: Dictionary, is_squad: bool) -> PanelContainer:
+	var panel = PanelContainer.new()
+	panel.custom_minimum_size = Vector2(0, 72)
+	var hbox = HBoxContainer.new()
+	panel.add_child(hbox)
+	
+	var name_label = Label.new()
+	name_label.text = "%s  (%s)" % [p.name, p.pos]
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.add_child(name_label)
+	
+	var ovr_label = Label.new()
+	ovr_label.text = "OVR %d" % p.ovr
+	ovr_label.add_theme_font_size_override("font_size", 18)
+	hbox.add_child(ovr_label)
+	
+	if not is_squad:
+		var buy_btn = Button.new()
+		buy_btn.text = "£%dM" % int(p.value / 1000000)
+		buy_btn.pressed.connect(func(): _buy_player(p))
+		hbox.add_child(buy_btn)
+	
+	return panel
+
+func _buy_player(p: Dictionary) -> void:
+	if budget >= p.value:
+		budget -= p.value
 		squad.append(p)
-
-func update_info() -> void:
-	var avg = 0
-	if squad.size() > 0:
-		for p in squad:
-			avg += p.rating
-		avg /= squad.size()
-	info_label.text = "Season: %d\nRecord: %dW - %dL\nTeam Avg: %d" % [season, wins, losses, avg]
-
-func _on_view_squad() -> void:
-	var text = "[b]Your Squad:[/b]\n"
-	for p in squad:
-		text += "%s (%s) - %d\n" % [p.name, p.position, p.rating]
-	log_label.text = text
-
-func _on_simulate() -> void:
-	var my_avg = 0
-	for p in squad:
-		my_avg += p.rating
-	my_avg /= max(1, squad.size())
-	var opp_avg = 65 + randi() % 25
-	var my_goals = maxi(0, int((my_avg - 60) / 8.0) + randi() % 4)
-	var opp_goals = maxi(0, int((opp_avg - 60) / 8.0) + randi() % 4)
-	var result = "DRAW"
-	if my_goals > opp_goals:
-		wins += 1
-		result = "[color=green]WIN![/color]"
-	elif my_goals < opp_goals:
-		losses += 1
-		result = "[color=red]LOSS[/color]"
-	log_label.text = "Match Result: %s\nScore: %d - %d\nYour Avg: %d | Opp: %d" % [result, my_goals, opp_goals, my_avg, opp_avg]
-	update_info()
-
-func _on_next_season() -> void:
-	season += 1
-	for p in squad:
-		if randf() > 0.5:
-			p.rating = mini(95, p.rating + randi() % 3)
-	wins = 0
-	losses = 0
-	update_info()
-	log_label.text = "[b]New season started![/b] Squad improved slightly."
+		transfer_pool.erase(p)
+		budget_label.text = "Budget: £%dM" % int(budget / 1000000)
+		_populate_squad()
+		_populate_transfers()
