@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1"]
 
@@ -11,128 +11,192 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="BG" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.08, 0.1, 0.14, 1)
+color = Color(0.03, 0.08, 0.05, 1)
 
 [node name="Header" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 80.0
-theme_override_constants/separation = 12
-alignment = 1
+offset_bottom = 70.0
 
-[node name="Title" type="Label" parent="Header"]
+[node name="ClubName" type="Label" parent="Header"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "FM Manager"
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+text = "Arsenal FC"
+size_flags_horizontal = 3
+
+[node name="Budget" type="Label" parent="Header"]
+layout_mode = 2
+text = "£48.0M"
 
 [node name="Content" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 80.0
+offset_top = 70.0
 offset_bottom = -90.0
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 12
 
-[node name="TabContainer" type="TabContainer" parent="Content"]
+[node name="Tabs" type="TabContainer" parent="Content"]
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
 
-[node name="Squad" type="ScrollContainer" parent="Content/TabContainer"]
+[node name="Office" type="VBoxContainer" parent="Content/Tabs"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 
-[node name="SquadList" type="VBoxContainer" parent="Content/TabContainer/Squad"]
+[node name="NextMatch" type="PanelContainer" parent="Content/Tabs/Office"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
+custom_minimum_size = Vector2(0, 120)
 
-[node name="Transfers" type="VBoxContainer" parent="Content/TabContainer"]
-visible = false
+[node name="MatchLabel" type="Label" parent="Content/Tabs/Office/NextMatch"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="TransferTitle" type="Label" parent="Content/TabContainer/Transfers"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = "Transfer Market"
+text = "EFL Cup - Round 2\nNewcastle United vs Swindon Town\nPlay the Tie"
 horizontal_alignment = 1
 
-[node name="BudgetLabel" type="Label" parent="Content/TabContainer/Transfers"]
+[node name="StatsRow" type="HBoxContainer" parent="Content/Tabs/Office"]
 layout_mode = 2
-text = "Budget: £50M"
 
-[node name="TransferList" type="ScrollContainer" parent="Content/TabContainer/Transfers"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Tactics" type="VBoxContainer" parent="Content/TabContainer"]
-visible = false
+[node name="BalanceCard" type="PanelContainer" parent="Content/Tabs/Office/StatsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
 
-[node name="TacticsTitle" type="Label" parent="Content/TabContainer/Tactics"]
+[node name="BalanceLabel" type="Label" parent="Content/Tabs/Office/StatsRow/BalanceCard"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = "Tactics"
-horizontal_alignment = 1
+text = "Balance\n£26.0M"
 
-[node name="FormationLabel" type="Label" parent="Content/TabContainer/Tactics"]
-layout_mode = 2
-text = "Formation: 4-3-3"
-
-[node name="Club" type="VBoxContainer" parent="Content/TabContainer"]
-visible = false
+[node name="FormCard" type="PanelContainer" parent="Content/Tabs/Office/StatsRow"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="FormLabel" type="Label" parent="Content/Tabs/Office/StatsRow/FormCard"]
+layout_mode = 2
+text = "Form\nW W D L W"
+
+[node name="League" type="PanelContainer" parent="Content/Tabs/Office"]
+layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ClubTitle" type="Label" parent="Content/TabContainer/Club"]
+[node name="LeagueLabel" type="Label" parent="Content/Tabs/Office/League"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = "Club"
+text = "Premier League\n5 Man Utd 12\n6 Spurs 11\n7 Newcastle 10"
+
+[node name="Tactics" type="VBoxContainer" parent="Content/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Pitch" type="TextureRect" parent="Content/Tabs/Tactics"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 280)
+
+[node name="FormationLabel" type="Label" parent="Content/Tabs/Tactics"]
+layout_mode = 2
+text = "Formation: 4-2-3-1 Wide"
 horizontal_alignment = 1
 
-[node name="BottomTabs" type="HBoxContainer" parent="."]
+[node name="Mentality" type="HBoxContainer" parent="Content/Tabs/Tactics"]
+layout_mode = 2
+alignment = 1
+
+[node name="Defensive" type="Button" parent="Content/Tabs/Tactics/Mentality"]
+layout_mode = 2
+text = "Defensive"
+
+[node name="Balanced" type="Button" parent="Content/Tabs/Tactics/Mentality"]
+layout_mode = 2
+text = "Balanced"
+
+[node name="Attacking" type="Button" parent="Content/Tabs/Tactics/Mentality"]
+layout_mode = 2
+text = "Attacking"
+
+[node name="Club" type="VBoxContainer" parent="Content/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="StadiumImg" type="TextureRect" parent="Content/Tabs/Club"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 180)
+
+[node name="StadiumTitle" type="Label" parent="Content/Tabs/Club"]
+layout_mode = 2
+text = "Emirates Stadium"
+theme_override_font_sizes/font_size = 20
+
+[node name="StadiumStats" type="HBoxContainer" parent="Content/Tabs/Club"]
+layout_mode = 2
+
+[node name="Cap" type="Label" parent="Content/Tabs/Club/StadiumStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Capacity\n60,704"
+
+[node name="Att" type="Label" parent="Content/Tabs/Club/StadiumStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Attendance\n98%"
+
+[node name="Facilities" type="VBoxContainer" parent="Content/Tabs/Club"]
+layout_mode = 2
+
+[node name="Train" type="Label" parent="Content/Tabs/Club/Facilities"]
+layout_mode = 2
+text = "Training Facilities  Level 4/10"
+
+[node name="Youth" type="Label" parent="Content/Tabs/Club/Facilities"]
+layout_mode = 2
+text = "Youth Academy  Level 5/10"
+
+[node name="Squad" type="ScrollContainer" parent="Content/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="SquadList" type="VBoxContainer" parent="Content/Tabs/Squad"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Market" type="ScrollContainer" parent="Content/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="MarketList" type="VBoxContainer" parent="Content/Tabs/Market"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Bottom" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -90.0
-theme_override_constants/separation = 0
-alignment = 1
 
-[node name="SquadTab" type="Button" parent="BottomTabs"]
+[node name="OfficeBtn" type="Button" parent="Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Office"
+
+[node name="SquadBtn" type="Button" parent="Bottom"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Squad"
 
-[node name="TransfersTab" type="Button" parent="BottomTabs"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Transfers"
-
-[node name="TacticsTab" type="Button" parent="BottomTabs"]
+[node name="TacticsBtn" type="Button" parent="Bottom"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Tactics"
 
-[node name="ClubTab" type="Button" parent="BottomTabs"]
+[node name="MarketBtn" type="Button" parent="Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Market"
+
+[node name="ClubBtn" type="Button" parent="Bottom"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Club"
