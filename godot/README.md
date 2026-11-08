@@ -1,19 +1,10 @@
 # Football Manager (Godot)
 
-Simple football manager game rebuilt in Godot 4 for better UI potential.
+Portrait-mode football manager with:
+- Manager profile (name, nationality, outfit, social)
+- Real players (EA FC 27 public ratings)
+- Transfer market
+- Tab-based UI (Squad / Transfers / Tactics / Club / Manager)
+- Club selection flow ready to expand
 
-## How to run
-1. Open in Godot 4.7+
-2. Run the Main scene
-
-## Export to APK
-- Configure Android SDK/Java in Editor Settings
-- Use the Android export preset
-
-## Current features
-- Squad generation
-- Match simulation
-- Season progression
-- Basic UI with labels and buttons (easy to expand with themes, cards, icons)
-
-Source is in scenes/ and scripts/.
+Open godot/ folder in Godot 4.7+ and run Main scene.
